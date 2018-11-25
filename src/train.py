@@ -6,7 +6,9 @@ import numpy as np
 import os
 import timeit
 import keras
+import sys
 from keras.models import Sequential
+from keras.models import save_model
 from keras.layers import Conv2D
 from keras.layers import MaxPooling2D
 from keras.layers import Flatten
@@ -17,6 +19,8 @@ from sklearn.model_selection import train_test_split
 
 #paths to find train and test data
 
+epochs = sys.argv[1]
+path = sys.argv[2]
 
 train_Images_1_dir = '/home/dmitriy/Documents/Dataset/Images_0/'
 train_Images_2_dir = '/home/dmitriy/Documents/Dataset/Images_1/'
@@ -89,12 +93,14 @@ model.summary()
 
 model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
 
-model.fit(X_train,y_train,epochs=2)
+model.fit(X_train,y_train,epochs=int(epochs))
 
 score = model.evaluate(X_test, y_test)
-print(score)
-model_json = model.to_json()
-with open("model.json", "w") as json_file:
-    json_file.write(model_json)
 
-model.save_weights("model.h5")
+#model.save("path/model.h5")
+save_model(
+    model,
+    path,
+    overwrite=True,
+    include_optimizer=True
+)
